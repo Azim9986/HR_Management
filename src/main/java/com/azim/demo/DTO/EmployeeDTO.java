@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Transient;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 public class EmployeeDTO {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String name;
@@ -24,16 +24,14 @@ public class EmployeeDTO {
 
     private String role;
 
-    public String getRole() {
-        return role;
+    public List<String> getRole() {
+        return role != null ? List.of(role.split(",")) : List.of();
     }
 
     public void setRole(String role) {
         this.role = role;
     }
 
-    @Transient
-    private String password;
     private EmployeeStatus employeeStatus;
 
     public EmployeeDTO() {
@@ -103,11 +101,4 @@ public class EmployeeDTO {
         this.joiningDate = joiningDate;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

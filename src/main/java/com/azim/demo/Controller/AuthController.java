@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,14 +52,24 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 
-            // If authentication is successful, generate the JWT token
+            // If authentication is successful, get the role and generate the JWT token
             if (authentication.isAuthenticated()) {
-                String token = jwtUtil.generateToken(authRequest.getEmail());
+                // Get user details and extract role
+                UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
+                String role = ((UserDetails) userDetails).getAuthorities().stream()
+                        .findFirst()
+                        .map(auth -> auth.getAuthority().replace("ROLE_", ""))
+                        .orElse("USER");  // Default role if no role found
+
+                // Generate token with email and role
+                String token = jwtUtil.generateToken(authRequest.getEmail(), role);
                 return ResponseEntity.ok(token);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
             }
         } catch (Exception e) {
+            // Log exception for debugging
+            System.err.println("Authentication error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
         }
     }

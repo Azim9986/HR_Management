@@ -98,13 +98,13 @@ public class EmployeeServiceImpl implements EmployeeService{
         Employee employee = new Employee();
         employee.setName(dto.getName());
         employee.setEmail(dto.getEmail());
-        employee.setPassword(passwordEncoder.encode(dto.getPassword())); // Encrypt here
+        employee.setPassword(passwordEncoder.encode(employee.getPassword())); // Encrypt here
         employee.setDepartment(dto.getDepartment());
         employee.setPosition(dto.getPosition());
         employee.setSalary(dto.getSalary());
         employee.setEmployeeStatus(dto.getEmployeeStatus());
         employee.setJoiningDate(dto.getJoiningDate());
-        employee.setRole(dto.getRole());
+//        employee.setRole(dto.getRole());
 
         Employee saved = employeeRepo.save(employee);
         return convertTODTO(saved);

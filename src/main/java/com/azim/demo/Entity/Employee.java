@@ -25,6 +25,10 @@ public class Employee extends BaseEntity{
     private Double salary;
     private String role;
 
+    public List<String> getAllRole() {
+        return role != null ? List.of(role.split(",")) : List.of();
+    }
+
     public String getRole() {
         return role;
     }

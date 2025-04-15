@@ -26,6 +26,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Disable CSRF for REST APIs
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/auth/**").permitAll()  // Allow open access to auth endpoints
+                        .requestMatchers("/admin/**").hasRole("ADMIN")  // Allow open access to auth endpoints
                         .anyRequest().authenticated())  // Secure the rest
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));  // Stateless session for APIs
