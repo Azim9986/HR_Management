@@ -2,16 +2,10 @@ package com.azim.demo.Entity;
 
 import com.azim.demo.ENUM.EmployeeStatus;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-
 import java.time.LocalDate;
 import java.util.List;
-
 
 @NoArgsConstructor
 @Entity
@@ -29,6 +23,15 @@ public class Employee extends BaseEntity{
     private String department;
     private String position;
     private Double salary;
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     private String password;
 

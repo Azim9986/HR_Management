@@ -21,6 +21,17 @@ public class EmployeeDTO {
     private String position;
     private LocalDate joiningDate;
     private Double salary;
+
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Transient
     private String password;
     private EmployeeStatus employeeStatus;

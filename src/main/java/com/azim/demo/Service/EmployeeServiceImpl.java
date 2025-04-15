@@ -104,6 +104,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         employee.setSalary(dto.getSalary());
         employee.setEmployeeStatus(dto.getEmployeeStatus());
         employee.setJoiningDate(dto.getJoiningDate());
+        employee.setRole(dto.getRole());
 
         Employee saved = employeeRepo.save(employee);
         return convertTODTO(saved);

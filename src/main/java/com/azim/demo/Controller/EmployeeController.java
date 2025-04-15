@@ -3,15 +3,21 @@ package com.azim.demo.Controller;
 import com.azim.demo.DTO.*;
 import com.azim.demo.ENUM.EmployeeStatus;
 import com.azim.demo.Entity.Employee;
+import com.azim.demo.Exceptions.EmailAlreadyExistsException;
+import com.azim.demo.Repository.EmployeeRepo;
 import com.azim.demo.Service.EmployeeService;
 import com.azim.demo.Service.LeaveService;
 import com.azim.demo.Service.LeaveServiceImpl;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -22,23 +28,24 @@ public class EmployeeController {
     @Autowired
     private LeaveService leaveService;
 
-//    @GetMapping
-//    public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
-//        List<EmployeeDTO> employees = employeeService.getAllEmployees();
-//        return ResponseEntity.ok(employees);
-//    }
+    @Autowired
+    private EmployeeRepo employeeRepo;
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
-//        EmployeeDTO employee = employeeService.getEmployeeById(id);
-//        return ResponseEntity.ok(employee);
-//    }
+    @GetMapping("/")
+    public String greet(){
+        return "Hello";
+    }
 
     @PostMapping("/create")
     public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        Optional<Employee> existing = employeeRepo.findByEmail(employeeDTO.getEmail());
+        if (existing.isPresent()){
+            throw new EmailAlreadyExistsException("Employee with this email already exists.");
+        }
         EmployeeDTO created = employeeService.saveEmployee(employeeDTO);
         return ResponseEntity.ok(created);
     }
+
     @PostMapping("/leave/{id}")
     public ResponseEntity<LeaveResponseDto> requestLeave(@PathVariable Long id,@RequestBody LeaveResponseDto leaveResponseDto){
         LeaveResponseDto created = leaveService.leaveRequest(id,leaveResponseDto);
@@ -66,31 +73,15 @@ public class EmployeeController {
         return ResponseEntity.ok("Employee deleted successfully.");
     }
 
-//    @GetMapping("/isActive/{id}")
-//    public EmployeeStatusDTO getEmployeeStatusById (@PathVariable Long id){
-//        return employeeService.getEmployeeStatusById(id);
-//    }
-//
-//    @GetMapping("/status/{status}")
-//    public List<EmployeeDTO> searchByStatus(@PathVariable String status) {
-//        EmployeeStatus empStatus = EmployeeStatus.valueOf(status.toUpperCase());
-//        return employeeService.getEmployeeByStatus(String.valueOf(empStatus));
-//    }
-//
-//    @GetMapping("/department/{dept}")
-//    public List<EmployeeDTO> searchByDepartment(@PathVariable String dept){
-//        return employeeService.getEmployeeByDepatment(dept);
-//    }
-//    @GetMapping("/position/{position}")
-//    public List<EmployeeDTO> searchByPosition(@PathVariable String position){
-//        return employeeService.getEmployeeByPosition(position);
+
+//    @PostMapping("/login")
+//    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
+//        LoginResponse response = employeeService.loginEmployee(request);
+//        return ResponseEntity.ok(response);
 //    }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
-        LoginResponse response = employeeService.loginEmployee(request);
-        return ResponseEntity.ok(response);
-    }
+
+
 
 
 
