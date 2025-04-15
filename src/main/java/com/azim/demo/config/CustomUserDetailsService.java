@@ -25,12 +25,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         Employee employee = employeeRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        // Convert the list of roles into SimpleGrantedAuthority list
         List<SimpleGrantedAuthority> authorities = employee.getAllRole().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim())) // Add "ROLE_" prefix as required by Spring Security
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
                 .collect(Collectors.toList());
 
-        // Return a User object which is a Spring Security implementation
         return new User(employee.getEmail(), employee.getPassword(), authorities);
     }
 }

@@ -23,20 +23,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Disable CSRF for REST APIs
+                .csrf(csrf -> csrf.disable()) .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth/**").permitAll()  // Allow open access to auth endpoints
-                        .requestMatchers("/admin/**").hasRole("ADMIN")  // Allow open access to auth endpoints
-                        .anyRequest().authenticated())  // Secure the rest
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));  // Stateless session for APIs
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // Return the BCryptPasswordEncoder bean
+        return new BCryptPasswordEncoder();
     }
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {

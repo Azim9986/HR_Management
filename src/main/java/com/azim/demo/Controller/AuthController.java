@@ -40,41 +40,33 @@ public class AuthController {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // Login method to authenticate and generate a JWT token
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
         try {
-            // Print for debugging
             System.out.println("Email: " + authRequest.getEmail());
             System.out.println("Password: " + authRequest.getPassword());
 
-            // Authenticate using AuthenticationManager
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 
-            // If authentication is successful, get the role and generate the JWT token
             if (authentication.isAuthenticated()) {
-                // Get user details and extract role
                 UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
                 String role = ((UserDetails) userDetails).getAuthorities().stream()
                         .findFirst()
                         .map(auth -> auth.getAuthority().replace("ROLE_", ""))
                         .orElse("USER");  // Default role if no role found
 
-                // Generate token with email and role
                 String token = jwtUtil.generateToken(authRequest.getEmail(), role);
                 return ResponseEntity.ok(token);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
             }
         } catch (Exception e) {
-            // Log exception for debugging
             System.err.println("Authentication error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
         }
     }
 
-//     Sample user creation for testing purposes (inserting one user in the DB)
 //    @PostConstruct
 //    public void init() {
 //        Employee e = new Employee();

@@ -72,17 +72,4 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
         return ResponseEntity.ok("Employee deleted successfully.");
     }
-
-
-//    @PostMapping("/login")
-//    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
-//        LoginResponse response = employeeService.loginEmployee(request);
-//        return ResponseEntity.ok(response);
-//    }
-
-
-
-
-
-
 }
